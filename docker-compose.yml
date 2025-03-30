@@ -1,0 +1,36 @@
+version: '3.8'
+services:
+  flask:
+    build: .
+    restart: always
+    ports:
+      - "8080:5000"
+    depends_on:
+      - db  
+    networks:
+      - front-end
+      - back-end
+    environment:
+      DB_HOST: db
+      DB_USER: amine
+      DB_PASSWORD: mastouri
+      DB_NAME: flask_db
+  db:
+    image: mysql:8
+    restart: always
+    networks:
+      - back-end
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: flask_db
+      MYSQL_USER: amine
+      MYSQL_PASSWORD: mastouri        
+    volumes:
+      - db_data:/var/lib/mysql
+
+volumes:
+  db_data:
+
+networks:
+  front-end:
+  back-end:       
