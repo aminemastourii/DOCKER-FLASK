@@ -1,15 +1,25 @@
-import os
 from flask import Flask
+import mysql.connector
 
 app = Flask(__name__)
 
-@app.route("/")
-def main():
-    return "Welcome!"
+def get_db_connection():
+    connection = mysql.connector.connect(
+        host="db",
+        user="root",
+        password="example",
+        database="test_db"
+    )
+    return connection
 
-@app.route("/how are you")
-def hello():
-    return "I am good, how are you?"
+@app.route('/')
+def hello_world():
+    connection = get_db_connection()
+    cursor = connection.cursor()
+    cursor.execute("SELECT 'Hello, Docker!'")
+    result = cursor.fetchone()
+    connection.close()
+    return str(result[0])
 
 if __name__ == "__main__":
-    app.run()
+    app.run(host='0.0.0.0')
